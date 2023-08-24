@@ -2,8 +2,7 @@ import { Router } from 'express';
 import { check } from 'express-validator';
 
 import { postUser } from '../controllers/users.js';
-import { emailExists } from '../helpers/db-validators.js';
-import { fieldsValidators } from '../middlewares/fields-validators.js';
+import { emailExists, fieldsValidators } from '../middlewares/index.js';
 
 const router = Router();
 

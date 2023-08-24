@@ -11,7 +11,7 @@ export default class Server {
 
     //paths
     this.paths = {
-      users: '/api/v1/users',
+      users: '/cafe-api/v1/users',
     };
 
     //bd connection
