@@ -48,7 +48,15 @@ export const putUser = async (req = request, res = response) => {
 export const deleteUser = async (req = request, res = response) => {
   const { id } = req.params;
 
-  const user = await User.findByIdAndUpdate(id, { status: false });
+  //physical remove
+  //const user = await User.findByIdAndDelete(id);
+
+  const user = await User.findByIdAndUpdate(
+    id,
+    { status: false },
+    { new: true }
+  );
+  //const authenticatedUser = req.authenticatedUser;
 
   res.json({
     user,

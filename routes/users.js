@@ -1,12 +1,20 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
 
-import { postUser, putUser, deleteUser, getUsers } from '../controllers/users.js';
+import {
+  postUser,
+  putUser,
+  deleteUser,
+  getUsers,
+} from '../controllers/users.js';
 import {
   emailExists,
   fieldsValidators,
   isValidRole,
   userIdExists,
+  validateJwt,
+  isAdminRole,
+  //hasRole,
 } from '../middlewares/index.js';
 
 const router = Router();
@@ -42,6 +50,9 @@ router.put(
 router.delete(
   '/:id',
   [
+    validateJwt,
+    isAdminRole,
+    //hasRole('ADMIN_ROLE', 'SALES_ROLE'),
     check('id', 'Is not a valid id').isMongoId(),
     check('id').custom(userIdExists),
     fieldsValidators,
