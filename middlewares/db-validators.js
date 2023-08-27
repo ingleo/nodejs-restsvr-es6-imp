@@ -17,15 +17,28 @@ const emailExists = async (email) => {
 const userIdExists = async (id) => {
   const userId = await User.findById(id);
   if (!userId) {
-    throw new Error(`The user with id ${id} does not exist`);
+    throw new Error(`User with id ${id} does not exist`);
   }
 };
 
 const categoryIdExists = async (id) => {
   const categoryId = await Category.findById(id);
   if (!categoryId) {
-    throw new Error(`The category with id ${id} does no exist`);
+    throw new Error(`Category with id ${id} does no exist`);
   }
 };
 
-export { emailExists, isValidRole, userIdExists, categoryIdExists };
+const productIdExists = async (id) => {
+  const productId = await Product.findById(id);
+  if (!productId) {
+    throw new Error(`Product with id ${id} does not exist`);
+  }
+};
+
+export {
+  emailExists,
+  isValidRole,
+  userIdExists,
+  categoryIdExists,
+  productIdExists,
+};
