@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken';
 import { User } from '../models/index.js';
 
 const validateJwt = async (req = request, res = response, next) => {
-  const token = req.header('x-token');
+  //const token = req.header('x-token');
+  const token = req.cookies['cafe-app-cookie'];
 
   if (!token) {
     return res.status(401).json({

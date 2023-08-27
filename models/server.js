@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import { dbConnection } from '../database/config.js';
 import {
@@ -42,6 +43,9 @@ export default class Server {
 
     //body parser
     this.app.use(express.json());
+
+    //cookie parser
+    this.app.use(cookieParser());
 
     //public dir
     this.app.use(express.static('public'));

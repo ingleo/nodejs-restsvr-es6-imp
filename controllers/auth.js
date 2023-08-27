@@ -31,9 +31,12 @@ const login = async (req = request, res = response) => {
 
     const token = await getJwt(user.id);
 
+    res.cookie('cafe-app-cookie', token, {
+      httpOnly: true,
+    });
+
     res.json({
       user,
-      token,
     });
   } catch (error) {
     console.log(error);
