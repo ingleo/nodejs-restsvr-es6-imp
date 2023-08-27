@@ -1,4 +1,4 @@
-import { User, Role, Category } from '../models/index.js';
+import { User, Role, Category, Product } from '../models/index.js';
 
 const isValidRole = async (role = '') => {
   const roleExists = await Role.findOne({ name: role });
