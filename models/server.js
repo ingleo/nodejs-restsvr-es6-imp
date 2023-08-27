@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 
 import { dbConnection } from '../database/config.js';
-import { authRouter, usersRouter } from '../routes/index.js';
+import { authRouter, usersRouter, categoriesRouter } from '../routes/index.js';
 
 export default class Server {
   constructor() {
@@ -13,6 +13,7 @@ export default class Server {
     this.paths = {
       auth: '/cafe-api/v1/auth',
       users: '/cafe-api/v1/users',
+      categories: '/cafe-api/v1/categories',
     };
 
     //bd connection
@@ -43,6 +44,7 @@ export default class Server {
   getRoutes() {
     this.app.use(this.paths.auth, authRouter);
     this.app.use(this.paths.users, usersRouter);
+    this.app.use(this.paths.categories, categoriesRouter);
   }
 
   listen() {
