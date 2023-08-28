@@ -8,6 +8,7 @@ import {
   usersRouter,
   categoriesRouter,
   productsRouter,
+  searchRouter,
 } from '../routes/index.js';
 
 export default class Server {
@@ -21,6 +22,7 @@ export default class Server {
       users: '/cafe-api/v1/users',
       categories: '/cafe-api/v1/categories',
       products: '/cafe-api/v1/products',
+      search: '/cafe-api/v1/search',
     };
 
     //bd connection
@@ -56,6 +58,7 @@ export default class Server {
     this.app.use(this.paths.users, usersRouter);
     this.app.use(this.paths.categories, categoriesRouter);
     this.app.use(this.paths.products, productsRouter);
+    this.app.use(this.paths.search, searchRouter);
   }
 
   listen() {
