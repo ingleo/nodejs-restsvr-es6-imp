@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import fileUpload from 'express-fileupload';
 
 import { dbConnection } from '../database/config.js';
 import {
@@ -9,6 +10,7 @@ import {
   categoriesRouter,
   productsRouter,
   searchRouter,
+  uploadsRouter,
 } from '../routes/index.js';
 
 export default class Server {
@@ -23,6 +25,7 @@ export default class Server {
       categories: '/cafe-api/v1/categories',
       products: '/cafe-api/v1/products',
       search: '/cafe-api/v1/search',
+      uploads: '/cafe-api/v1/uploads',
     };
 
     //bd connection
@@ -51,6 +54,15 @@ export default class Server {
 
     //public dir
     this.app.use(express.static('public'));
+
+    //fileupload
+    this.app.use(
+      fileUpload({
+        useTempFiles: true,
+        tempFileDir: '/tmp/',
+        createParentPath: true,
+      })
+    );
   }
 
   getRoutes() {
@@ -59,6 +71,7 @@ export default class Server {
     this.app.use(this.paths.categories, categoriesRouter);
     this.app.use(this.paths.products, productsRouter);
     this.app.use(this.paths.search, searchRouter);
+    this.app.use(this.paths.uploads, uploadsRouter);
   }
 
   listen() {
