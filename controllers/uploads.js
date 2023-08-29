@@ -53,9 +53,50 @@ export const updateImg = async (req = request, res = response) => {
     }
   }
 
-  const fileName = await fileUpload(req.files, undefined, collection);
-  model.img = fileName;
+  try {
+    const fileName = await fileUpload(req.files, undefined, collection);
+    model.img = fileName;
 
-  await model.save();
-  res.json(model);
+    await model.save();
+    res.json(model);
+  } catch (err) {
+    res.status(400).json({ msg: err });
+  }
+};
+
+export const getImg = async (req = request, res = response) => {
+  const { collection, id } = req.params;
+
+  let model;
+
+  switch (collection) {
+    case 'users':
+      model = await User.findById(id);
+      if (!model) {
+        return res.status(400).json({
+          msg: `There is no user with id ${id}`,
+        });
+      }
+      break;
+    case 'products':
+      model = await Product.findById(id);
+      if (!model) {
+        return res.status(400).json({
+          msg: `There is no product with id ${id}`,
+        });
+      }
+      break;
+    default:
+      return res.status(400).json({ msg: `Invalid collection` });
+  }
+
+  if (model.img) {
+    const imgPath = path.join(__dirname, '../uploads', collection, model.img);
+    if (fs.existsSync(imgPath)) {
+      return res.sendFile(imgPath);
+    }
+  }
+
+  const noImagePath = path.join(__dirname, '../assets', 'no-image.jpg');
+  res.sendFile(noImagePath);
 };
