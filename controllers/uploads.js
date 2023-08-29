@@ -1,10 +1,20 @@
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+
+import dotenv from 'dotenv';
 import { request, response } from 'express';
+import { v2 as cloudinary } from 'cloudinary';
 
 import { fileUpload } from '../helpers/file-upload.js';
 import { User, Product } from '../models/index.js';
+
+dotenv.config();
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -95,6 +105,91 @@ export const getImg = async (req = request, res = response) => {
     if (fs.existsSync(imgPath)) {
       return res.sendFile(imgPath);
     }
+  }
+
+  const noImagePath = path.join(__dirname, '../assets', 'no-image.jpg');
+  res.sendFile(noImagePath);
+};
+
+export const updateCloudinaryImg = async (req = request, res = response) => {
+  const { collection, id } = req.params;
+
+  let model;
+
+  switch (collection) {
+    case 'users':
+      model = await User.findById(id);
+      if (!model) {
+        return res.status(400).json({
+          msg: `There is no user with id ${id}`,
+        });
+      }
+      break;
+    case 'products':
+      model = await Product.findById(id);
+      if (!model) {
+        return res.status(400).json({
+          msg: `There is no product with id ${id}`,
+        });
+      }
+      break;
+    default:
+      return res.status(400).json({ msg: `Invalid collection` });
+  }
+
+  if (model.img) {
+    const fileNamePath = model.img.split('/');
+    const fileName = fileNamePath[fileNamePath.length - 1];
+    const [public_id] = fileName.split('.');
+    try {
+      await cloudinary.uploader.destroy(public_id);
+    } catch (err) {
+      res.status(500).json({ msg: err });
+    }
+  }
+
+  const { tempFilePath } = req.files.filekey;
+  try {
+    const { secure_url } = await cloudinary.uploader.upload(tempFilePath, {
+      folder: collection,
+    });
+    model.img = secure_url;
+    await model.save();
+
+    res.json(model);
+  } catch (err) {
+    res.status(500).json({ msg: err });
+  }
+};
+
+export const getCloudinaryImg = async (req = request, res = response) => {
+  const { collection, id } = req.params;
+
+  let model;
+
+  switch (collection) {
+    case 'users':
+      model = await User.findById(id);
+      if (!model) {
+        return res.status(400).json({
+          msg: `There is no user with id ${id}`,
+        });
+      }
+      break;
+    case 'products':
+      model = await Product.findById(id);
+      if (!model) {
+        return res.status(400).json({
+          msg: `There is no product with id ${id}`,
+        });
+      }
+      break;
+    default:
+      return res.status(400).json({ msg: `Invalid collection` });
+  }
+
+  if (model.img) {
+    return res.redirect(model.img);
   }
 
   const noImagePath = path.join(__dirname, '../assets', 'no-image.jpg');
