@@ -11,6 +11,7 @@ import {
   productsRouter,
   searchRouter,
   uploadsRouter,
+  giftsRouter,
 } from '../routes/index.js';
 
 export default class Server {
@@ -26,6 +27,7 @@ export default class Server {
       products: '/cafe-api/v1/products',
       search: '/cafe-api/v1/search',
       uploads: '/cafe-api/v1/uploads',
+      gifts: '/cafe-api/v1/gifts',
     };
 
     //bd connection
@@ -72,6 +74,7 @@ export default class Server {
     this.app.use(this.paths.products, productsRouter);
     this.app.use(this.paths.search, searchRouter);
     this.app.use(this.paths.uploads, uploadsRouter);
+    this.app.use(this.paths.gifts, giftsRouter);
   }
 
   listen() {
