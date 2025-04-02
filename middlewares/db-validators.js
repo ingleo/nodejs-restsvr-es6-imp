@@ -1,9 +1,16 @@
-import { User, Role, Category, Product } from '../models/index.js';
+import { User, Role, Category, Product, Gift} from '../models/index.js';
 
 const isValidRole = async (role = '') => {
   const roleExists = await Role.findOne({ name: role });
   if (!roleExists) {
     throw new Error(`The role ${role} is not allowed`);
+  }
+
+  if (role === 'ADMIN_ROLE') {
+    const adminRoleExists = await User.findOne({ role });
+    if (adminRoleExists) {
+      throw new Error(`Can not create admin user`);
+    }
   }
 };
 
@@ -35,6 +42,13 @@ const productIdExists = async (id) => {
   }
 };
 
+const giftIdExists = async (id) => {
+  const giftDb = await Gift.findById(id);
+  if (!giftDb) {
+    throw new Error(`Gift with id ${id} does not exist`);
+  }
+};
+
 const isValidCollection = (collectionName = '', collections = []) => {
   const valid = collections.includes(collectionName);
   if (!valid) {
@@ -50,5 +64,6 @@ export {
   userIdExists,
   categoryIdExists,
   productIdExists,
+  giftIdExists,
   isValidCollection,
 };

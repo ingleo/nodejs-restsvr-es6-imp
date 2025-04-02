@@ -4,3 +4,4 @@ export { categoriesRouter } from '../routes/categories.js';
 export { productsRouter } from '../routes/products.js';
 export { searchRouter } from '../routes/search.js';
 export { uploadsRouter } from '../routes/uploads.js';
+export { giftsRouter } from '../routes/gifts.js';
